@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "William Daniel's Acid Trip",
+  "version": "1.0.0",
+  "description": "SEIZURE WARNING! | Every one in ten pages has a little surprise for you.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": { "default_popup": "popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
+
