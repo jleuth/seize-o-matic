@@ -91,12 +91,15 @@ function colorRoulette(){
     const originalState = { ...state };
     state.palette = randomPalette;
     
-    flashOnce(2000);
+    // Random duration between 3-5 seconds (3000-5000ms)
+    const flashDuration = Math.floor(Math.random() * 2000) + 3000;
+    
+    flashOnce(flashDuration);
     
     setTimeout(() => {
       state = originalState;
       applyOverlay();
-    }, 2000);
+    }, flashDuration);
   }
 }
 
