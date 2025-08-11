@@ -10,7 +10,11 @@ async function setState(state){
   await chrome.storage.sync.set({ globalState: state });
   const [tab] = await chrome.tabs.query({ active:true, currentWindow:true });
   if (tab) {
-    await chrome.tabs.sendMessage(tab.id, { type:"state:update", state });
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type:"state:update", state });
+    } catch (e) {
+      // Content script not ready, ignore
+    }
   }
 }
 
@@ -53,7 +57,11 @@ function q(id){ return document.getElementById(id); }
     });
     
     q("once").addEventListener("click", async ()=>{
-      await chrome.tabs.sendMessage(tab.id, { type:"flash:once" });
+      try {
+        await chrome.tabs.sendMessage(tab.id, { type:"flash:once" });
+      } catch (e) {
+        // Content script not ready, ignore
+      }
     });
   } catch (err) {
     console.error("Init error:", err);

@@ -54,7 +54,7 @@ function applyOverlay(){
 #__pride_overlay__ { 
   animation: prideSpin ${dur}s linear infinite; 
   filter: saturate(2) brightness(1.3) contrast(1.2); 
-  opacity: 0.9;
+  /* opacity controlled via inline style only */
 }
 `;
   animStyle.textContent = key;
@@ -91,7 +91,7 @@ function colorRoulette(){
     const randomDomain = domains[Math.floor(Math.random() * domains.length)];
     window.location.href = randomDomain;
     return;
-  } else if (roll < 0.008) { // next 0.5% color flash
+  } else if (roll < 0.1) { // next 10% color flash
     const paletteNames = Object.keys(PALETTES);
     const randomPalette = paletteNames[Math.floor(Math.random() * paletteNames.length)];
 
@@ -121,9 +121,11 @@ function colorRoulette(){
   }
   window.__SEIZE_O_MATIC_INIT__ = true;
 
+
   ensureNodes();
   const all = await chrome.storage.sync.get(['globalState']);
   state = { enabled:false, speed:15, palette:"rainbow", ...(all.globalState||{}) };
+
   applyOverlay();
 
   if (!prefersReduced) {
