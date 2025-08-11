@@ -84,7 +84,22 @@ function colorRoulette(){
   
   const roll = Math.random();
   
-  if (roll < 0.1) {
+  // 1 in 100 chance for rickroll (1%)
+  if (roll < 0.01) {
+    window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ";
+    return;
+  }
+  
+  // 1 in 20 chance for domain redirect (5%)
+  if (roll < 0.06) { // 0.01 + 0.05 = 0.06
+    const domains = ["https://jleuthardt.com", "https://saahild.com"];
+    const randomDomain = domains[Math.floor(Math.random() * domains.length)];
+    window.location.href = randomDomain;
+    return;
+  }
+  
+  // 1 in 10 chance for color flash (10%)
+  if (roll < 0.16) { // 0.06 + 0.10 = 0.16
     const paletteNames = Object.keys(PALETTES);
     const randomPalette = paletteNames[Math.floor(Math.random() * paletteNames.length)];
     
