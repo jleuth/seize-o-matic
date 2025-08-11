@@ -76,41 +76,33 @@ chrome.runtime.onMessage.addListener((msg)=>{
   }
 });
 
-// Random chance flash on page load
+// Random chance flash/redirect on page load (simple & rare)
 function colorRoulette(){
-  if (state.enabled) {
-    return;
-  }
-  
-  const roll = Math.random();
-  
-  // 1 in 100 chance for rickroll (1%)
-  if (roll < 0.01) {
+  if (state.enabled) return; // if user enabled globally, skip roulette
+
+  const roll = Math.random(); // 0..1
+
+  // 0.1% Rickroll
+  if (roll < 0.001) {
     window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ";
     return;
-  }
-  
-  // 1 in 20 chance for domain redirect (5%)
-  if (roll < 0.06) { // 0.01 + 0.05 = 0.06
+  } else if (roll < 0.003) { // next 0.2% partner domains
     const domains = ["https://jleuthardt.com", "https://saahild.com"];
     const randomDomain = domains[Math.floor(Math.random() * domains.length)];
     window.location.href = randomDomain;
     return;
-  }
-  
-  // 1 in 10 chance for color flash (10%)
-  if (roll < 0.16) { // 0.06 + 0.10 = 0.16
+  } else if (roll < 0.008) { // next 0.5% color flash
     const paletteNames = Object.keys(PALETTES);
     const randomPalette = paletteNames[Math.floor(Math.random() * paletteNames.length)];
-    
+
     const originalState = { ...state };
     state.palette = randomPalette;
-    
+
     // Random duration between 3-5 seconds (3000-5000ms)
     const flashDuration = Math.floor(Math.random() * 2000) + 3000;
-    
+
     flashOnce(flashDuration);
-    
+
     setTimeout(() => {
       state = originalState;
       applyOverlay();
@@ -120,6 +112,15 @@ function colorRoulette(){
 
 // Initialize
 (async function init(){
+  // Only run in top frame to avoid iframes triggering effects on every page
+  try { if (window.top !== window.self) return; } catch(_) {}
+
+  // Run-once guard to avoid double initialization/injection
+  if (window.__SEIZE_O_MATIC_INIT__) {
+    return;
+  }
+  window.__SEIZE_O_MATIC_INIT__ = true;
+
   ensureNodes();
   const all = await chrome.storage.sync.get(['globalState']);
   state = { enabled:false, speed:15, palette:"rainbow", ...(all.globalState||{}) };
